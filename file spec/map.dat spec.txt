@@ -1,0 +1,45 @@
+0000 - 2CBA
+
+0000: Size of Screen Name
+0001 - 001E:  Screen Name
+Next are the individual blocks, each has 6 bytes
+001F - 259E Screen blocks in 6 block sections
+
+First:Blink (1/0) | FG Color 0-E
+Second: BG Color 1-7
+Third: ASCII Char
+Fourth:
+Fith
+Sixth: Sqare Type
+
+
+Type
+0 = Unpassable
+1 = Grass
+2 = Rocky
+3 = Water
+5 = Forest
+
+259F - 2AC6: Hot spots
+Ten Hot Spots supported each 132 bytes in length
+
+Offset
+0000: Lower 16 bit warp map
+0001: Upper 16 bit warp map
+0002: Location of hotspot X
+0003: Location of hotspot Y
+0004: Location of wrap X
+0005: Location of wrap Y
+0006: Ref Name Size
+0007 - 0012: Ref Name
+0013: File Name Size
+0014 - 001F: File Name
+0020 - 0084: Garbage
+
+2AC7: Lower 16 bit monster/random
+2AC8: Upper 16 bit monster/random
+2ACB: Size of monster/random file name
+2ACC - 2AD7: monster/random file name
+2AD8: Size of monster/random ref name
+2AD9 - 2AE4: monster/random ref name
+2AE5: Player fighting allowed 1=N, 0=Y
