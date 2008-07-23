@@ -1,0 +1,4 @@
+0000: World name Size
+0001 - 003C: World name
+003D - 0CBC: World Blocks to Map numbers
+108B - 16CA: Map visable
