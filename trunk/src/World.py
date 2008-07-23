@@ -17,12 +17,55 @@ class Types:
     def __init__(self): raise Exception('cannot create an instance of this class')
 
 class World:
-    """Holds the data describing one map screen, i.e.: all the terrain,
-    hotspots, etc.."""
-    def __init__(self):
-        self.maps = list()
+	"""Holds the data describing one map screen, i.e.: all the terrain,
+	hotspots, etc.."""
+	def __init__(self):
+		self.maps = list()
 
-    def load_map_file(self, filename):
+	def load_world_file(self, filename):
+		self.worlddata = list() #this should be here so if worlddata was used before it will not be empty
+
+		#set some useful values
+		map_num_offset = 0x3D
+		map_visible_offset = 0x108B
+
+		f = open(data_dir + filename, 'rb')
+
+		#first lets get the name
+		name_size = struct.unpack('<B', f.read(1))[0] # Get first byte
+
+		format = '<' + str(name_size) + 's'
+		self.name = struct.unpack(format, f.read(name_size))[0] # Read world name
+
+		#Now itterate through all of the possible world blocks
+		for map in range(0,1600):
+			print 'map:', map
+			#extract map to block mapping
+			f.seek(map_num_offset + (map * 2))
+			
+			#TODO: Fix me
+			#for some reason map_loc is only picking up one byte instead of two
+			map_loc = struct.unpack('<2B', f.read(2))[0]
+
+			print 'map_loc:', map_loc
+			
+			#extract visibility
+			f.seek(map_visible_offset + map)
+			visible = struct.unpack('<B', f.read(1))[0]
+
+			if ((map_loc > 0) and (visible == 0)):
+				visible = True
+			else:
+				visible = False
+
+			print 'visible: ',visible
+			
+			tmp = WorldData(map_loc, visible)
+			self.worlddata.append(tmp)
+
+		f.close()
+
+	def load_map_file(self, filename):
 		fsize = os.path.getsize(data_dir + filename)
 		#print 'file_size:', fsize
 
@@ -177,3 +220,8 @@ class Map:
 		self.ref_file = ref_file
 		self.ref_function = ref_function
 		self.pvp = pvp
+class WorldData:
+	"""Holds all of the map data for a world"""
+	def __init__(self, map, visible):
+		self.map = map
+		self.visible = visible
