@@ -1,5 +1,6 @@
 import os
 import struct
+from pysqlite2 import dbapi2 as sqlite
 
 data_dir = os.path.join('original/')
 Map_max_x = 80
@@ -39,15 +40,11 @@ class World:
 
 		#Now itterate through all of the possible world blocks
 		for map in range(0,1600):
-			print 'map:', map
 			#extract map to block mapping
 			f.seek(map_num_offset + (map * 2))
 			
-			#TODO: Fix me
 			#for some reason map_loc is only picking up one byte instead of two
-			map_loc = struct.unpack('<2B', f.read(2))[0]
-
-			print 'map_loc:', map_loc
+			map_loc = struct.unpack('<H', f.read(2))[0]
 			
 			#extract visibility
 			f.seek(map_visible_offset + map)
@@ -58,7 +55,6 @@ class World:
 			else:
 				visible = False
 
-			print 'visible: ',visible
 			
 			tmp = WorldData(map_loc, visible)
 			self.worlddata.append(tmp)
@@ -109,7 +105,7 @@ class World:
 			for i in range(((0x2ac7 + map_offset) - (map_offset + 0x259f)) / 132):
 				#print ' --- Hotspot', i
 				offset_start = f.tell()
-				warp_map = struct.unpack('<2B', f.read(2))[0]
+				warp_map = struct.unpack('<H', f.read(2))[0]
 				#print 'warp_map:', warp_map
 
 				spot_x = struct.unpack('<B', f.read(1))[0]
@@ -152,7 +148,7 @@ class World:
 
 			f.seek(map_offset + 0x2AC7) #move to where the final map data is
 			
-			rand = struct.unpack('<2B', f.read(2))[0]
+			rand = struct.unpack('<H', f.read(2))[0]
 			#print 'rand:', rand
 
 			ref_file = ref_function = None #Init these with nothing
